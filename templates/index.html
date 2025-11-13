@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+
+  <h2 class="text-center mt-5">Buscar Recetas</h2>
+
+  <form action="{{ url_for('receta') }}" method="POST" class="text-center mt-5">
+    <input type="text" name="search_term" id="search_term" placeholder="¿Qué quieres comer?" required>
+    <button type="submit">Buscar Receta</button>
+  </form>
+
+{% endblock %}
+
