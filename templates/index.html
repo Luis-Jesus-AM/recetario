@@ -2,11 +2,11 @@
 
 {% block contenido %}
 
-  <h2 class="text-center mt-5">Buscar Recetas</h2>
+  <h2 class="text-center mt-5">¿Qué quieres comer?</h2>
 
   <form action="{{ url_for('receta') }}" method="POST" class="text-center mt-5">
     <input type="text" name="search_term" id="search_term" placeholder="¿Qué quieres comer?" required>
-    <button type="submit">Buscar Receta</button>
+    <button type="submit" class="btn btn-outline-primary">A comer</button>
   </form>
 
 {% endblock %}
