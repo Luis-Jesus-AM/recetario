@@ -4,45 +4,54 @@ import requests
 app = Flask(__name__)
 app.secret_key = 'hola'
 
-API_KEY = "f6b36cb84f3b46fab7d19b28bcb4c681" 
+API_KEY = "f6b36cb84f3b46fab7d19b28bcb4c681"
 BASE_URL = "https://api.spoonacular.com/recipes/complexSearch"
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-@app.route("/receta", methods=["GET", "POST"])
-def receta():
+@app.route("/alcohol", methods=["GET", "POST"])
+def alcohol():
     if request.method == "POST":
-        search_term = request.form.get('search_term', '').strip().lower()
-        
-        if not search_term:
-            flash('Por favor, ingresa un término de búsqueda válido', 'error')
-            return redirect(url_for('receta'))
-        
+        max_alcohol = request.form.get("max_alcohol", "").strip()
+
+        if not max_alcohol.isdigit():
+            flash("Ingresa un número válido para maxAlcohol.", "error")
+            return redirect(url_for("alcohol"))
+
         try:
-            url = f"{BASE_URL}?query={search_term}&apiKey={API_KEY}&number=10&cuisine=any"
+            url = (
+                f"{BASE_URL}?apiKey={API_KEY}"
+                f"&number=10"
+                f"&addRecipeNutrition=true"
+                f"&maxAlcohol={max_alcohol}"
+            )
+
             response = requests.get(url)
 
             if response.status_code == 200:
-                recipes = response.json().get("results", [])
-                if recipes:
-                    return render_template('receta.html', recipes=recipes, search_term=search_term)
-                else:
-                    flash(f'No se encontraron recetas para "{search_term}"', 'error')
-                    return redirect(url_for('receta'))
-            else:
-                flash(f'Error al consultar la API de Spoonacular. Código de estado: {response.status_code}', 'error')
-                return redirect(url_for('receta'))
-        
-        except requests.exceptions.RequestException as e:
-            flash(f'Hubo un error al conectarse con la API: {e}', 'error')
-            return redirect(url_for('receta'))
+                data = response.json()
+                recipes = data.get("results", [])
 
-    return render_template("receta.html", recipes=[], search_term=None)
+                return render_template(
+                    "alcohol.html",
+                    recipes=recipes,
+                    max_alcohol=max_alcohol
+                )
+            else:
+                flash(f"Error en la API (código {response.status_code}).", "error")
+                return redirect(url_for("alcohol"))
+
+        except requests.exceptions.RequestException as e:
+            flash(f"Error al conectar: {e}", "error")
+            return redirect(url_for("alcohol"))
+
+    # GET
+    return render_template("alcohol.html", recipes=[], max_alcohol=None)
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
