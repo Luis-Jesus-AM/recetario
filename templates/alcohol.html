@@ -2,37 +2,31 @@
 
 {% block contenido %}
 
-<h2>Buscar recetas por nivel máximo de alcohol</h2>
-
-<form method="POST">
-    <label>Máximo de alcohol (g):</label>
-    <input type="number" name="max_alcohol" required>
-    <button type="submit">Buscar</button>
-</form>
-
+<h2>Resultados con ≤ {{ max_alcohol }}g de alcohol</h2>
+<a href="{{ url_for('index') }}">Volver</a>
 <hr>
 
 {% if recipes %}
-<h3>Resultados (≤ {{ max_alcohol }}g de alcohol):</h3>
+    {% for r in recipes %}
+        <div style="margin-bottom:25px;">
+            <h3>{{ r.title }}</h3>
 
-{% for r in recipes %}
-    <div style="margin-bottom:25px;">
-        <h4>{{ r.title }}</h4>
-        {% if r.image %}
-            <img src="{{ r.image }}" width="200"><br>
-        {% endif %}
+            {% if r.image %}
+                <img src="{{ r.image }}" width="200"><br>
+            {% endif %}
 
-        {% if r.nutrition and r.nutrition.nutrients %}
-            <strong>Alcohol:</strong>
-            {% for n in r.nutrition.nutrients %}
-                {% if n.name == "Alcohol" %}
-                    {{ n.amount }} {{ n.unit }}
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    </div>
-{% endfor %}
-
+            {% if r.nutrition and r.nutrition.nutrients %}
+                <strong>Alcohol:</strong>
+                {% for n in r.nutrition.nutrients %}
+                    {% if n.name == "Alcohol" %}
+                        {{ n.amount }} {{ n.unit }}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No se encontraron recetas.</p>
 {% endif %}
 
 {% endblock %}

@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block contenido %}
-<h1>Bienvenido</h1>
+<h1>Buscar recetas según el nivel de alcohol</h1>
 
-<a href="{{ url_for('alcohol') }}">Buscar por nivel de alcohol</a>
+<form action="{{ url_for('alcohol') }}" method="POST">
+    <label>Máximo de alcohol (g):</label>
+    <input type="number" name="max_alcohol" required>
+    <button type="submit">Buscar</button>
+</form>
 
 {% endblock %}
